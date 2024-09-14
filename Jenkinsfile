@@ -35,13 +35,6 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    sonarQubeAnalysis('soanr-server', 'mern-stack', 'mern-stack')
-                }
-            }
-        }
         stage('build') {
             steps {
                 script {
