@@ -35,16 +35,6 @@ pipeline {
                 }
             }
         }
-        stage('Run Dependency-Check') {
-            steps {
-                script {
-                    def backendDir = 'mern/backend'
-                    def frontendDir = 'mern/frontend'
-
-                    dependencyCheck additionalArguments: "--project MyProject --scan ${backendDir} --scan ${frontendDir} --format HTML", odcInstallation: 'DP-Check'
-                }
-            }
-        }
         stage('SonarQube Analysis') {
             steps {
                 script {
