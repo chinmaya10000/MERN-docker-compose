@@ -10,7 +10,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'chinmayapradhan'
         IMAGE_VERSION = "${env.BUILD_NUMBER}"
-        SCANNER_HOME = tool 'sonar-scanner'
+        SCANNER_HOME = tool 'sonar-server'
     }
 
     stages {
