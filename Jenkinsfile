@@ -1,3 +1,5 @@
+#!/usr/bin/env groovy
+
 @Library('jenkins-shared-library')_
 
 pipeline {
@@ -7,11 +9,8 @@ pipeline {
     }
     environment {
         DOCKER_REGISTRY = 'chinmayapradhan'
+        IMAGE_VERSION = "${env.BUILD_NUMBER}"
     }
-    /*parameters {
-        string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
-        string(name: 'BACKEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
-    }*/
 
     stages {
         stage('Clone repo') {
@@ -28,26 +27,31 @@ pipeline {
                 }
             }
         }
+        stage('Scan Filesystem for Vulnerabilities') {
+            steps {
+                scritp {
+                    scanCodebase()
+                }
+            }
+        }
         stage('build') {
             steps {
                 script {
-                    dir('mern/backend') {
-                        sh "docker build -t ${DOCKER_REGISTRY}/backend ."
-                    }
-                    dir('mern/frontend') {
-                        sh "docker build -t ${DOCKER_REGISTRY}/frontend ."
-                    }
+                    buildDockerImage(env.DOCKER_REGISTRY, 'mern/backend', 'mern/frontend', env.IMAGE_VERSION)
+                }
+            }
+        }
+        stage('Image Security Scan') {
+            steps {
+                script {
+                    imageSecurityScan("${DOCKER_REGISTRY}/backend:${IMAGE_VERSION}", "${DOCKER_REGISTRY}/frontend:${IMAGE_VERSION}")
                 }
             }
         }
         stage('push') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'docker-repo', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
-                        sh "docker push $DOCKER_REGISTRY/backend:latest"
-                        sh "docker push $DOCKER_REGISTRY/frontend:latest"
-                    }
+                    pushDockerImage(env.DOCKER_REGISTRY, env.IMAGE_VERSION)
                 }
             }
         }
