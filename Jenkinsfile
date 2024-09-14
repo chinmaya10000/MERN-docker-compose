@@ -48,8 +48,8 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-repo', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
-                        sh 'docker push $DOCKER_REGISTRY/backend:latest'
-                        sh 'docker push $DOCKER_REGISTRY/frontend:latest'
+                        sh "docker push $DOCKER_REGISTRY/backend:latest"
+                        sh "docker push $DOCKER_REGISTRY/frontend:latest"
                     }
                 }
             }
