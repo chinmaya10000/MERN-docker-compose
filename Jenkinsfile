@@ -5,7 +5,6 @@ pipeline {
     }
     environment {
         DOCKER_REGISTRY = 'chinmayapradhan'
-        IMAGE_VERSION = "${env.BUILD_ID}-${env.GIT_COMMIT}"
     }
     /*parameters {
         string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
