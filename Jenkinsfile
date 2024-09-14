@@ -22,12 +22,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    dir('mern/backend') {
-                        sh 'npm install'
-                    }
-                    dir('mern/frontend') {
-                        sh 'npm install'
-                    }
+                    installDependencies('mern/backend', 'mern/frontend')
                 }
             }
         }
