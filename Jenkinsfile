@@ -1,16 +1,14 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18.9.1'
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket for building images
-        }
+    agent any
+    tools {
+        nodejs 'Node'
     }
     environment {
         DOCKER_REGISTRY = 'chinmayapradhan'
         IMAGE_VERSION = "${env.BUILD_ID}-${env.GIT_COMMIT}"
     }
 
-    stages (
+    stages {
         stage('Clone repo') {
             steps {
                 script {
@@ -30,5 +28,5 @@ pipeline {
                 }
             }
         }
-    )
+    }
 }
