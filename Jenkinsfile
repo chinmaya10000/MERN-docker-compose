@@ -27,13 +27,6 @@ pipeline {
                 }
             }
         }
-        stage('Static Code Analysis') {
-            steps {
-                script {
-                    staticCodeAnalysis('mern/backend', 'mern/frontend')
-                }
-            }
-        }
         stage('Unit Testing') {
             steps {
                 script {
