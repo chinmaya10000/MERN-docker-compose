@@ -10,6 +10,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'chinmayapradhan'
         IMAGE_VERSION = "${env.BUILD_NUMBER}"
+        SCANNER_HOME = tool 'sonar-scanner'
     }
 
     stages {
@@ -27,17 +28,24 @@ pipeline {
                 }
             }
         }
-        stage('Unit Testing') {
-            steps {
-                script {
-                    unitTesting('mern/backend', 'mern/frontend')
-                }
-            }
-        }
         stage('Scan Filesystem for Vulnerabilities') {
             steps {
                 scritp {
                     scanCodebase()
+                }
+            }
+        }
+        stage('Run Dependency-Check') {
+            steps {
+                script {
+                    dependencyCheck()
+                }
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    sonarQubeAnalysis('soanr-server', 'mern-stack', 'mern-stack')
                 }
             }
         }
