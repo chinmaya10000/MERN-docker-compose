@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Scan Filesystem for Vulnerabilities') {
             steps {
-                scritp {
+                script {
                     scanCodebase()
                 }
             }
