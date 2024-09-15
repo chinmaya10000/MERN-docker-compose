@@ -1,23 +1,29 @@
-# Use the official image as a parent image
-# Description: Dockerfile for the client side of the MERN stack application
+# # Stage 1: Build Stage
+FROM node:18.9.1 AS frontend-builder
 
-# Use the official image as a parent image
-FROM node:18.9.1
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install Dependencies
+RUN npm install
+
+# Copy the rest of application code
+COPY . .
+
+# Stage 2
+FROM node:18.9.1-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the file from your host to your current location
-COPY package.json .
+# Copy only the built files from the build stage
+COPY --from=frontend-builder /app /app
 
-# Run the command inside your image filesystem
-RUN npm install
-
-# Inform Docker that the container is listening on the specified port at runtime
+# Expose the port your app runs on
 EXPOSE 5173
 
-# Copy the rest of your app's source code from your host to your image filesystem
-COPY . .
-
-# Run the specified command within the container
+# Command to run application
 CMD ["npm", "run", "dev"]
