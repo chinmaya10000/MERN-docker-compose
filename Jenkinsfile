@@ -13,10 +13,10 @@ pipeline {
     }
 
     stages {
-        stage('Clone repo') {
+        stage('Clone Repo') {
             steps {
                 script {
-                    git 'https://github.com/chinmaya10000/MERN-docker-compose.git'
+                    cloneRepo("https://github.com/chinmaya10000/MERN-docker-compose.git", "master")
                 }
             }
         }
