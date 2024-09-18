@@ -55,14 +55,10 @@ pipeline {
                 }
             }
         }
-        stage('Deploy App') {
-            environment {
-                DOCKER_CREDS = credentials('docker-credentials-id')
-            }
+        stage('Update Deployment Files') {
             steps {
                 script {
-                    echo 'Deploying docker image to EC2...'
-                    deployToEC2('ec2-user@3.22.194.148', env.IMAGE_VERSION, 'docker-credentials-id', 'ec2-server-key')
+                    updateK8sDeployments(env.DOCKER_REGISTRY, 'kubernetes/backend.yaml', 'kubernetes/frontend.yaml', env.IMAGE_VERSION)
                 }
             }
         }
