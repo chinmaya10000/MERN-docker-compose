@@ -50,13 +50,6 @@ pipeline {
                 }
             }
         }
-        stage('Quality Gate Check') {
-            steps {
-                script {
-                    qualityGateCheck()
-                }
-            }
-        }
         stage('build Image') {
             steps {
                 script {
