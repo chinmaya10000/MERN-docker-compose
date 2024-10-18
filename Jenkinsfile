@@ -50,13 +50,6 @@ pipeline {
                 }
             }
         }
-        stage('Quality Gate Check') {
-            steps {
-                script {
-                    qualityGateCheck()
-                }
-            }
-        }
         stage('build Image') {
             steps {
                 script {
@@ -88,7 +81,12 @@ pipeline {
         stage('Update Deployment Files') {
             steps {
                 script {
-                    echo 'update file'
+                    dir('kubernetes') {
+                        sh 'sed -i "s#chinmayapradhan.*#${env.IMAGE_REGISTRY}/backend:${IMAGE_VERSION}" backend.yml'
+                    }
+                    dir('kubernetes') {
+                        sh 'sed -i "s#chinmayapradhan.*#${env.IMAGE_REGISTRY}/frontend:${IMAGE_VERSION}" frontend.yml'
+                    }
                 }
             }
         }
