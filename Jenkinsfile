@@ -82,10 +82,12 @@ pipeline {
             steps {
                 script {
                     dir('kubernetes') {
-                        sh 'sed -i "s#chinmayapradhan.*#${env.IMAGE_REGISTRY}/backend:${IMAGE_VERSION}" backend.yml'
-                    }
-                    dir('kubernetes') {
-                        sh 'sed -i "s#chinmayapradhan.*#${env.IMAGE_REGISTRY}/frontend:${IMAGE_VERSION}" frontend.yml'
+                        sh '''
+                            sed -i "s#image: chinmayapradhan/backend:.*#image: ${IMAGE_REGISTRY}/backend:${IMAGE_VERSION}#" backend.yml
+                        '''
+                        sh '''
+                            sed -i "s#image: chinmayapradhan/frontend:.*#image: ${IMAGE_REGISTRY}/frontend:${IMAGE_VERSION}#" frontend.yml
+                        '''
                     }
                 }
             }
