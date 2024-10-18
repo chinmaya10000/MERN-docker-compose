@@ -53,10 +53,10 @@ pipeline {
         stage('build Image') {
             steps {
                 script {
-                    dir('backend') {
+                    dir('mern/backend') {
                         buildDockerImage("${env.IMAGE_REGISTRY}/backend", env.IMAGE_VERSION)
                     }
-                    dir('frontend') {
+                    dir('mern/frontend') {
                         buildDockerImage("${env.IMAGE_REGISTRY}/frontend", env.IMAGE_VERSION)
                     }
                 }
