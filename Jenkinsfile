@@ -88,12 +88,7 @@ pipeline {
         stage('Update Deployment Files') {
             steps {
                 script {
-                    dir('kubernetes') {
-                        sh "sed -i "s#chinmayapradhan.*#${IMAGE_REGISTRY}/backend:${IMAGE_VERSION}#g" backend.yml"
-                    }
-                    dir('kubernetes') {
-                        sh "sed -i "s#chinmayapradhan.*#${IMAGE_REGISTRY}/frontend:${IMAGE_VERSION}#g" frontend.yml"
-                    }
+                    echo 'update file'
                 }
             }
         }
