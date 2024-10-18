@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: chinmayapradhan/frontend:${IMAGE_VERSION}
+        image: chinmayapradhan/frontend:13
         ports:
         - containerPort: 5173
         env:

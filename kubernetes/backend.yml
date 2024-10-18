@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: chinmayapradhan/backend:${IMAGE_VERSION}
+        image: chinmayapradhan/backend:13
         ports:
         - containerPort: 5050
         env:
