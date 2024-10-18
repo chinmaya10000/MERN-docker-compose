@@ -54,10 +54,10 @@ pipeline {
             steps {
                 script {
                     dir('backend') {
-                        buildDockerImage(env.IMAGE_REGISTRY/backend, env.IMAGE_VERSION)
+                        buildDockerImage("${env.IMAGE_REGISTRY}/backend", env.IMAGE_VERSION)
                     }
                     dir('frontend') {
-                        buildDockerImage(env.IMAGE_REGISTRY/frontend, env.IMAGE_VERSION)
+                        buildDockerImage("${env.IMAGE_REGISTRY}/frontend", env.IMAGE_VERSION)
                     }
                 }
             }
@@ -65,16 +65,16 @@ pipeline {
         stage('Image Security Scan') {
             steps {
                 script {
-                    imageSecurityScan(env.IMAGE_REGISTRY/backend, env.IMAGE_VERSION, 'backend-image.json')
-                    imageSecurityScan(env.IMAGE_REGISTRY/frontend, env.IMAGE_VERSION, 'frontend-image.json')
+                    imageSecurityScan("${env.IMAGE_REGISTRY}/backend", env.IMAGE_VERSION, 'backend-image.json')
+                    imageSecurityScan("${env.IMAGE_REGISTRY}/frontend", env.IMAGE_VERSION, 'frontend-image.json')
                 }
             }
         }
         stage('Push Image') {
             steps {
                 script {
-                    pushDockerImage(env.IMAGE_REGISTRY/backend, env.IMAGE_VERSION)
-                    pushDockerImage(env.IMAGE_REGISTRY/frontend, env.IMAGE_VERSION)
+                    pushDockerImage("${env.IMAGE_REGISTRY}/backend", env.IMAGE_VERSION)
+                    pushDockerImage("${env.IMAGE_REGISTRY}/frontend", env.IMAGE_VERSION)
                 }
             }
         }
