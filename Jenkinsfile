@@ -53,7 +53,7 @@ pipeline {
         stage('Quality Gate Check') {
             steps {
                 script {
-                    qualityGateCheck(timeoutHours: 1, abortPipeline: false)
+                    qualityGateCheck()
                 }
             }
         }
