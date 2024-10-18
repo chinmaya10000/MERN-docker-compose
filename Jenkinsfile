@@ -92,5 +92,22 @@ pipeline {
                 }
             }
         }
+        stage('Push to GitHub') {
+            steps {
+                script {
+                    echo 'Configure Git and push changes'
+                    withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                        sh '''
+                          git config --global user.name "chinmaya1000"
+                          git config --global user.email "chinmayapradhan10000@gmail.com"
+                          git remote set-url origin https://${GITHUB_TOKEN}@github.com/chinmaya10000/MERN-docker-compose.git
+                          git add kubernetes/backend.yml kubernetes/frontend.yml
+                          git commit -m "Updated deployment files with new image versions: backend ${IMAGE_VERSION}, frontend ${IMAGE_VERSION}"
+                          git push origin master
+                        '''
+                    }
+                }
+            }
+        }
     }
 }
