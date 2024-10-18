@@ -10,7 +10,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
   hostPath:
-    path: /mnt/data/mongo  # Path on the host where data will be stored
+    path: /home/ec2-user/MERN-docker-compose/mongo  # Path on the host where data will be stored
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

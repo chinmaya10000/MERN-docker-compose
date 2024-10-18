@@ -8,8 +8,9 @@ pipeline {
         nodejs 'Node'
     }
     environment {
-        DOCKER_REGISTRY = 'chinmayapradhan'
+        IMAGE_REGISTRY = 'chinmayapradhan'
         IMAGE_VERSION = "${env.BUILD_NUMBER}"
+        SCANNER_HOME=tool 'sonar-scanner'
     }
 
     stages {
@@ -20,10 +21,18 @@ pipeline {
                 }
             }
         }
-        stage('Install Dependencies') {
+        stage('Secret Scanning with Gitleaks') {
             steps {
                 script {
-                    installDependencies('mern/backend', 'mern/frontend')
+                    gitleaksScan('.', 'gitleaks-report.json')
+                }
+            }
+        }
+        stage('Unit Tests') {
+            steps {
+                script {
+                    echo 'Implement unit tests if applicable.'
+                    echo 'This stage is a sample placeholder'
                 }
             }
         }
@@ -34,31 +43,57 @@ pipeline {
                 }
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    sonarQubeAnalysis('sonar-server', 'mern-app', 'mern-app')
+                }
+            }
+        }
+        stage('Quality Gate Check') {
+            steps {
+                script {
+                    qualityGateCheck(timeoutHours: 1, abortPipeline: false)
+                }
+            }
+        }
         stage('build Image') {
             steps {
                 script {
-                    buildDockerImage(env.DOCKER_REGISTRY, 'mern/backend', 'mern/frontend', env.IMAGE_VERSION)
+                    dir('backend') {
+                        buildDockerImage(env.IMAGE_REGISTRY/backend, env.IMAGE_VERSION)
+                    }
+                    dir('frontend') {
+                        buildDockerImage(env.IMAGE_REGISTRY/frontend, env.IMAGE_VERSION)
+                    }
                 }
             }
         }
         stage('Image Security Scan') {
             steps {
                 script {
-                    imageSecurityScan("${DOCKER_REGISTRY}/backend:${IMAGE_VERSION}", "${DOCKER_REGISTRY}/frontend:${IMAGE_VERSION}")
+                    imageSecurityScan(env.IMAGE_REGISTRY/backend, env.IMAGE_VERSION, 'backend-image.json')
+                    imageSecurityScan(env.IMAGE_REGISTRY/frontend, env.IMAGE_VERSION, 'frontend-image.json')
                 }
             }
         }
         stage('Push Image') {
             steps {
                 script {
-                    pushDockerImage(env.DOCKER_REGISTRY, env.IMAGE_VERSION)
+                    pushDockerImage(env.IMAGE_REGISTRY/backend, env.IMAGE_VERSION)
+                    pushDockerImage(env.IMAGE_REGISTRY/frontend, env.IMAGE_VERSION)
                 }
             }
         }
         stage('Update Deployment Files') {
             steps {
                 script {
-                    updateK8sDeployments(env.DOCKER_REGISTRY, 'kubernetes/backend.yaml', 'kubernetes/frontend.yaml', env.IMAGE_VERSION)
+                    dir('kubernetes') {
+                        sh "sed -i "s#chinmayapradhan.*#${IMAGE_REGISTRY}/backend:${IMAGE_VERSION}#g" backend.yml"
+                    }
+                    dir('kubernetes') {
+                        sh "sed -i "s#chinmayapradhan.*#${IMAGE_REGISTRY}/frontend:${IMAGE_VERSION}#g" frontend.yml"
+                    }
                 }
             }
         }
